@@ -1,17 +1,28 @@
 const config = require("./config");
 const http = require("http");
+
 const sayHello = require("./modules/hello");
+const getUsers = require("./modules/users");
+const getFavicon = require("./modules/favicon");
 
 const server = http
   .createServer((request, response) => {
-    // Написать обработчик запроса:
-    // - Ответом на запрос `?hello=<name>` должна быть **строка** "Hello, <name>.", код ответа 200
-    // - Если параметр `hello` указан, но не передано `<name>`, то ответ **строка** "Enter a name", код ответа 400
-    // - Ответом на запрос `?users` должен быть **JSON** с содержимым файла `data/users.json`, код ответа 200
-    // - Если никакие параметры не переданы, то ответ **строка** "Hello, World!", код ответа 200
-    // - Если переданы какие-либо другие параметры, то пустой ответ, код ответа 500
-
     const url = new URL(request.url, `http://${config.host}`);
+
+    if (url.pathname === "/favicon.ico") {
+      const faviconData = getFavicon();
+
+      if (faviconData.length === 0) {
+        response.statusCode = 404;
+        response.end();
+        return;
+      }
+
+      response.statusCode = 200;
+      response.header = "Content-Type: image/x-icon";
+      response.end(faviconData);
+      return;
+    }
 
     if (url.pathname == "/") {
       const hello = url.searchParams.get("hello");
@@ -23,17 +34,23 @@ const server = http
         response.statusCode = result.statusCode;
         response.header = result.header;
         response.end(result.message);
+        return;
       }
 
       if (users !== null) {
+        const result = getUsers();
+        console.log(result);
+
         response.statusCode = 200;
         response.header = "Content-Type: application/json";
-        response.end(`{test:124,}`);
+        response.end(result);
+        return;
       }
 
       response.statusCode = 200;
       response.header = "Content-Type: text/plan";
       response.end("Hello, World!");
+      return;
     }
 
     response.statusCode = 500;
@@ -41,5 +58,5 @@ const server = http
   })
 
   .listen(config.port, config.host, () =>
-    console.log(`Server is running on http://${config.host}:${config.port}`)
+    console.log(`Сервер запущен по адресу: http://${config.host}:${config.port}`)
   );

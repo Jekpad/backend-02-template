@@ -1,3 +1,9 @@
+# Запуск сервера по кастомному пути
+
+Переименовать `.env.orig` в `.env`
+
+Запустить сервер командой `mpm run dev` или `npm run start`
+
 # Задание
 
 **Создать сервер на Node.js с использование модулей Http и Fs.**
@@ -17,7 +23,7 @@
 ## Чеклист для самопроверки
 
 - [ ] В файле package.json в секции scripts есть `dev` который запускает nodemon и `start` который запускает сервер в
-  обычном режиме.
+      обычном режиме.
 - [ ] Чтение файла с пользователями происходит в отдельном модуле, который подключается в главный файл.
 - [ ] Для указания пути при чтении файла используется модуль `path`.
 - [ ] Порт, на котором происходит запуск сервера, передается через переменную окружения (по умолчанию 3000).
@@ -33,7 +39,7 @@
 и [searchParams](https://developer.mozilla.org/ru/docs/Web/API/URLSearchParams).
 
 ```js
-const url = new URL(request.url, 'http://127.0.0.1');
+const url = new URL(request.url, "http://127.0.0.1");
 console.log(url);
 console.log(url.searchParams);
 ```
@@ -42,4 +48,3 @@ console.log(url.searchParams);
 
 В [справочнике](https://www.iana.org/assignments/media-types/media-types.xhtml) в столбце _Name_ указывается что за тип
 данных, а столбце _Template_ какой следует указывать Content-Type.
-
