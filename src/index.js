@@ -5,6 +5,8 @@ const sayHello = require("./modules/hello");
 const getUsers = require("./modules/users");
 const getFavicon = require("./modules/favicon");
 
+const allowedParams = ["hello", "users"];
+
 const server = http
   .createServer((request, response) => {
     const url = new URL(request.url, `http://${config.host}`);
@@ -25,6 +27,16 @@ const server = http
     }
 
     if (url.pathname == "/") {
+      const queryParams = [...url.searchParams.keys()];
+      const unexpectedParams = queryParams.filter((param) => !allowedParams.includes(param));
+
+      if (unexpectedParams.length > 0) {
+        response.statusCode = 500;
+        response.header = "Content-Type: text/plan";
+        response.end(`Unexpected query params: ${unexpectedParams.join(", ")}`);
+        return;
+      }
+
       const hello = url.searchParams.get("hello");
       const users = url.searchParams.get("users");
 
